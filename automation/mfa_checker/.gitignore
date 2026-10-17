@@ -1,0 +1,10 @@
+# Never commit credentials or raw scans
+.aws/
+*.pem
+*.key
+credentials
+.env
+# Raw snapshots contain the full account ID; keep them local
+evidence/**/snapshot.json
+__pycache__/
+.pytest_cache/
