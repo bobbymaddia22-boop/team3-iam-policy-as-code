@@ -185,3 +185,6 @@ cython_debug/
 *.key
 credentials
 *.tfstate
+# Raw IAM snapshots contain the full AWS account ID; keep them local
+evidence/**/snapshot.json
+.aws/
