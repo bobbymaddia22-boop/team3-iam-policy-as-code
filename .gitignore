@@ -188,3 +188,6 @@ credentials
 # Raw IAM snapshots contain the full AWS account ID; keep them local
 evidence/**/snapshot.json
 .aws/
+
+# Local-only script output that contains real user names
+output-private/
