@@ -1,0 +1,47 @@
+{
+  "scan_timestamp_utc": "2026-10-11T17:44:53.177765+00:00",
+  "account_id": "********9012",
+  "total_users": 5,
+  "noncompliant_count": 2,
+  "noncompliant_users": [
+    "t2",
+    "t4"
+  ],
+  "results": [
+    {
+      "user_name": "t1",
+      "console_access": true,
+      "mfa_device_count": 1,
+      "status": "COMPLIANT"
+    },
+    {
+      "user_name": "t2",
+      "console_access": true,
+      "mfa_device_count": 0,
+      "status": "NON_COMPLIANT"
+    },
+    {
+      "user_name": "t3",
+      "console_access": false,
+      "mfa_device_count": 0,
+      "status": "NOT_APPLICABLE"
+    },
+    {
+      "user_name": "t4",
+      "console_access": true,
+      "mfa_device_count": 0,
+      "status": "NON_COMPLIANT"
+    },
+    {
+      "user_name": "t5",
+      "console_access": true,
+      "mfa_device_count": 2,
+      "status": "COMPLIANT"
+    }
+  ],
+  "timing_seconds": {
+    "collect": 0.0771,
+    "evaluate": 0.0197,
+    "total": 0.0968
+  }
+}

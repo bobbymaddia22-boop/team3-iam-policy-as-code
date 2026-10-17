@@ -1,0 +1,42 @@
+{
+  "scan_timestamp_utc": "2026-10-11T17:44:53.177765+00:00",
+  "account_id": "123456789012",
+  "user_count": 5,
+  "users": [
+    {
+      "user_name": "t1",
+      "created": "2026-10-11T17:44:53.067081+00:00",
+      "console_access": true,
+      "mfa_devices": [
+        "arn:aws:iam::123456789012:mfa/t1-a"
+      ]
+    },
+    {
+      "user_name": "t2",
+      "created": "2026-10-11T17:44:53.070365+00:00",
+      "console_access": true,
+      "mfa_devices": []
+    },
+    {
+      "user_name": "t3",
+      "created": "2026-10-11T17:44:53.072446+00:00",
+      "console_access": false,
+      "mfa_devices": []
+    },
+    {
+      "user_name": "t4",
+      "created": "2026-10-11T17:44:53.074182+00:00",
+      "console_access": true,
+      "mfa_devices": []
+    },
+    {
+      "user_name": "t5",
+      "created": "2026-10-11T17:44:53.075786+00:00",
+      "console_access": true,
+      "mfa_devices": [
+        "arn:aws:iam::123456789012:mfa/t5-a",
+        "arn:aws:iam::123456789012:mfa/t5-b"
+      ]
+    }
+  ]
+}

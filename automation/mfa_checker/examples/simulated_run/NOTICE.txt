@@ -1,0 +1,6 @@
+SIMULATED OUTPUT - NOT PROJECT EVIDENCE
+
+These files were produced by running the pipeline against moto, a local IAM
+simulator, with made-up identities. They show the report format only.
+They are NOT results from the team's AWS sandbox and must not be cited as
+test results in Progress Report 1 or 2.
