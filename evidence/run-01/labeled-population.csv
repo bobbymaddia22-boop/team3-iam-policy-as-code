@@ -1,0 +1,6 @@
+user_name,console_password,mfa_devices,configuration,expected_status
+t1,true,1,Console password and one MFA device,COMPLIANT
+t2,true,0,Console password and no MFA device,NON_COMPLIANT
+t3,false,0,No console password (access key only),NOT_APPLICABLE
+t4,true,0,Console password; MFA device added then removed,NON_COMPLIANT
+t5,true,2,Console password and two MFA devices,COMPLIANT
