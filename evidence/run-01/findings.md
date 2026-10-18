@@ -12,7 +12,7 @@
 | **Data source** | Live IAM API calls (no cached credential report) |
 | **Manual method** | Manual audit of each user, performed by Bobby Maddia (Testing and Validation Lead). Evidence source: IAM console. |
 | **Run date** | 2026-10-05 |
-| **Documented** | 2026-10-17 |
+
 
 ## Summary
 
