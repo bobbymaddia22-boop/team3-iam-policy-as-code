@@ -1,0 +1,6 @@
+user_name,manual_status,minutes_approx
+t1,COMPLIANT,3
+t2,NON_COMPLIANT,3
+t3,NOT_APPLICABLE,3
+t4,NON_COMPLIANT,3
+t5,COMPLIANT,3
