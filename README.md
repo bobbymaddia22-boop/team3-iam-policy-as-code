@@ -23,7 +23,6 @@ Three methods are compared against labeled test users (t1 to t5) with known answ
 | Folder | What is in it |
 |--------|---------------|
 | `automation/mfa_checker/` | Automated check: collector, OPA rule, tests, and its own README |
-| `scripts/` | Read-only Python scripts for MFA status and credential report checks |
 | `tests/` | Test plan, test cases, results template, traceability matrix, and unit tests |
 | `policies/` | Baseline requirements and pointers to machine-readable policies |
 | `iam-config/` | IAM policy documents used in the lab |
