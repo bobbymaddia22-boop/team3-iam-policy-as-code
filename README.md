@@ -37,10 +37,7 @@ Each folder has its own README with details and run instructions.
 # Automated check (sandbox account only; see automation/mfa_checker/README.md)
 python run_check.py --approved-account-id <SANDBOX_ID> --outdir evidence/run1 --mask-account-id
 
-# Independent scripts (see scripts/README.md)
-python check_mfa_status.py --profile lab-readonly
-python credential_report_check.py --profile lab-readonly
-```
+
 
 ## Working in this repository
 
