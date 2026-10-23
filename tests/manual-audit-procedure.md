@@ -13,7 +13,7 @@
 
 ## 2. Evidence source
 
-Source used for this run: **[confirm: IAM console user pages, or the IAM credential report]**
+Source used for this run: **IAM console, Users list plus each user's Security credentials tab (console access and assigned MFA devices)**
 
 Account: sandbox, ID shown as `111122223333` in the repository.
 Identity used to view it: **[confirm]**
