@@ -1,78 +1,113 @@
-# Test Plan: MFA Enforcement (AWS IAM)
+# Test Plan: IAM Console-User MFA Check
 
-**Version:** 0.1 (draft)
-**Author:** [Your Name], Testing and Validation Lead
-**Last updated:** [YYYY-MM-DD]
-**Status:** Draft / In review / Approved
+**Version:** 0.2 (draft)
+**Author:** Bobby Maddia, Testing and Validation Lead
+**Last updated:** 2026-10-23
+**Status:** Draft, in review
 
-## 1. Control objective
+## 1. Control under test
 
-Multi-factor authentication is required for IAM users who sign in to the AWS
-Management Console and for sensitive API actions, and the root user is protected by MFA.
+Every IAM user who has a console password must have at least one MFA device registered.
+
+This plan tests whether the check **detects that configuration correctly**. It does not test whether AWS blocks a sign-in or API call that lacks MFA. That is a separate question and is listed under "Later work" in section 3.
 
 ## 2. Baseline requirements
 
-List the requirements this control is tested against. Verify the exact control
-IDs against the version of each document your team is using.
+Confirm each control ID against the document version the team actually cites before this plan is approved.
 
-| Ref | Source | Requirement (summary) |
-|-----|--------|-----------------------|
-| R1 | [CIS AWS Foundations Benchmark, control ID] | MFA enabled for the root user |
-| R2 | [CIS AWS Foundations Benchmark, control ID] | MFA enabled for all IAM users with a console password |
-| R3 | NIST SP 800-63B | Multi-factor authenticators for higher assurance levels |
-| R4 | [Team requirement or other source] | [Summary] |
+| Ref | Source | Requirement (summary) | Version / control ID |
+|-----|--------|-----------------------|----------------------|
+| R1 | CIS AWS Foundations Benchmark | MFA enabled for all IAM users that have a console password | [confirm version and control ID from the benchmark PDF] |
+| R2 | CIS AWS Foundations Benchmark | MFA enabled for the root user (reported separately, not scored here) | [confirm version and control ID] |
+| R3 | NIST SP 800-63B-4 | Multi-factor authenticators for higher assurance levels (background only) | [confirm section] |
 
 ## 3. Scope
 
 **In scope**
-- IAM users with console access in the lab account
-- A policy that denies sensitive actions unless MFA is present
-- Root user MFA status
-- IAM credential report data
+- IAM users in the sandbox account, classified by console password and registered MFA devices.
+- Comparison of the automated check against a manual audit on the same five users.
+- Root MFA status, **reported separately** and never counted in the user-control score.
+
+**Later work (not part of this run)**
+- Deny-without-MFA policy and the IAM policy simulator cases (formerly MFA-03, MFA-04, MFA-08).
+- Live sign-in or API enforcement testing.
+- Comparison with the AWS Config managed rules.
+- Rerun under the read-only scanner identity.
 
 **Out of scope**
-- [Identity federation / SSO, unless the team adds it]
-- [Production accounts or any real user data]
+- Identity federation / SSO.
+- Production accounts or any real user data.
 
-## 4. Test environment
+## 4. Test population
+
+Five synthetic users, created and labeled before either method runs. Ground truth is recorded in `evidence/run-01/labeled-population.csv`.
+
+| ID | Console password | MFA devices | Configuration | Expected status |
+|----|------------------|-------------|---------------|-----------------|
+| t1 | Yes | 1 | Console password and one MFA device | COMPLIANT |
+| t2 | Yes | 0 | Console password and no MFA device | NON_COMPLIANT |
+| t3 | No | 0 | No console password (access key only) | NOT_APPLICABLE |
+| t4 | Yes | 0 | Console password; MFA device added then removed | NON_COMPLIANT |
+| t5 | Yes | 2 | Console password and two MFA devices | COMPLIANT |
+
+## 5. Test environment
 
 | Item | Value |
 |------|-------|
-| AWS account | Lab account, ID shown as `111122223333` |
-| Region | [e.g., us-east-1] |
-| Test users | `test-user-mfa`, `test-user-nomfa` (placeholders) |
-| Policy under test | [Name and link to the file in `/iam-config`] |
-| Tools | AWS Console, AWS CLI, [boto3 script, if used] |
-| MFA type | [Virtual authenticator app / hardware key] |
+| AWS account | Sandbox account, ID shown as `111122223333` in the repository |
+| Region | [confirm] |
+| Identity used for the run | [confirm with Steve: root, console identity, or scanner role] |
+| Automated method | OPA/Rego pipeline in `automation/mfa_checker/` (Carlton) |
+| Cross-check | Python scripts in `scripts/` (Bobby) |
+| Manual method | [confirm: console or credential report], following `tests/manual-audit-procedure.md` |
 
-## 5. Assumptions and prerequisites
+## 6. Approach: how the comparison is kept fair
 
-- The lab account is isolated from any real workloads.
-- Test users and the policy under test exist before testing begins.
-- Testers have a method for generating MFA codes for the test user.
-- [Add more as needed]
+1. **Same population.** Both methods audit the same five users in the same account state. Nobody changes a user between runs.
+2. **Same evidence source for every user.** The manual procedure names its source. If the manual auditor reads the credential report and the automated check reads the same report, record that, because the comparison then measures reading effort, not independent data.
+3. **Blind to ground truth.** The auditor and the person running the automated check do not see `labeled-population.csv` until both result files are saved. Someone else (the person who built the population) holds the labels.
+4. **Results saved before scoring.** Each method writes its results file and records its SHA-256 hash before anyone compares them with the labels.
+5. **Timing boundaries defined** in `tests/manual-audit-procedure.md` and in section 7 below. Time is measured with a stopwatch per method, not estimated.
 
-## 6. Approach
+## 7. Metrics
 
-Each test case is run manually first, with evidence captured. Where possible,
-the same check is later repeated with a script so results are reproducible.
+- **Positive class:** NON_COMPLIANT.
+- **Confusion matrix** per method against the labeled expected status.
+- **Precision, recall and false-positive rate**, with the counts shown. With five users, one miss moves a rate by a large step, so treat the rates as descriptive only.
+- **Time:**
+  - *Automated:* from starting the command to the results file being written.
+  - *Manual:* from receiving the audit instructions to saving the completed results file.
+  - Setup, labeling and report writing are excluded from both, and the exclusion is stated in the findings.
+- **Agreement:** list every user where the two methods disagree and explain why.
 
-## 7. Pass/fail criteria
+## 8. Pass/fail criteria
 
-- **Pass:** The actual result matches the expected result and evidence is attached.
-- **Fail:** The actual result differs from the expected result. Record the difference.
-- **Blocked:** The test could not be run. Record the reason.
-- The control is considered **validated** when all in-scope test cases pass.
+- **Method result for a user:** matches the expected status = correct; otherwise incorrect. Record the difference.
+- **Run valid:** both result files exist, hashes are recorded, and the account ID check passed.
+- **Blocked:** the run could not be completed. Record the reason.
+- The control check is considered **supported by this run** if it classifies all five users correctly. A single run on five synthetic users cannot show more than that.
 
-## 8. Roles
+## 9. Safety requirements
+
+| Ref | Requirement | Test or evidence |
+|-----|-------------|------------------|
+| SR2 | Checks are read-only | scanner-iam-policy.json|
+| SR3 | Refuse to run against the wrong account | [Planned] |
+| SR4 | Results are traceable to a run | [list evidence, for example hashes in `findings.md`] |
+| SR1, SR5, SR6 | [Planned] | [fill in] |
+
+## 10. Roles
 
 | Person | Role |
 |--------|------|
-| [Name] | Testing and Validation Lead |
-| [Name] | [Role] |
+| Bobby Maddia | Testing and Validation Lead |
+| Carlton | Automation (OPA/Rego) |
+| Steve | AWS environment and live run |
+| Venika | Research and Risk Lead |
+| Dana DiLeo | Head of Documentation and write-ups |
 
-## 9. Risks and notes
+## 11. Limits
 
-- Note any limits of the lab environment that could affect results.
-- Note anything about how the policy condition behaves for long-term access
-  keys versus temporary session credentials, once the team has tested it.
+- One run, five synthetic users. Results show that the check works on these cases, not how it performs at scale.
+- Timing from the first run was an average, not stopwatch readings, and is treated as unverified until the artifacts are in `evidence/`.
+- Simulator results model AWS policy evaluation. They do not show live behavior.
