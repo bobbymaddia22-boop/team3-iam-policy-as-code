@@ -1,6 +1,6 @@
 # Evidence
 
-Redacted records of test runs for the MFA enforcement control. Every claim in the project
+Redacted records of test runs for the MFA configuration check. Every claim in the project
 reports should point to a file in this folder.
 
 ## Contents
@@ -15,8 +15,10 @@ reports should point to a file in this folder.
 | File or folder | Purpose |
 |----------------|---------|
 | `findings.md` | The write-up: population, automated results, manual results, disagreements, limits |
+| `SHA256SUMS.txt` | The SHA-256 hash of every committed file in the run, written by the command below |
+| `scoring-results.md` | Output of `scripts/score_results.py` for the run |
 | `labeled-population.csv` | The answer key: the expected result for every test user |
-| `manual-audit.csv` | The manual auditor's verdict and time for every test user |
+| `manual-audit.csv` | The manual auditor's observations and verdict for every test user |
 | `automated/` | Masked output files from the automated check (`report.json`, `report.csv`) |
 | `screenshots/` | Redacted console and terminal screenshots |
 
@@ -48,7 +50,13 @@ PowerShell, from the run folder:
 Get-FileHash -Algorithm SHA256 .\automated\report.json
 ```
 
-Copy the result into the evidence files table in `findings.md`. If a file is redacted before it is
+To hash every file in a run folder and write the list to `SHA256SUMS.txt`, run this in PowerShell from the repository root (change `run-02` to the run you are recording):
+
+```
+Get-ChildItem evidence\run-02 -Recurse -File | Where-Object { $_.Name -ne "snapshot.json" -and $_.Name -ne "SHA256SUMS.txt" } | ForEach-Object { $h = (Get-FileHash $_.FullName -Algorithm SHA256).Hash; "$h  $($_.FullName.Substring((Get-Location).Path.Length+1))" } | Out-File evidence\run-02\SHA256SUMS.txt -Encoding ascii
+```
+
+In Command Prompt, use `certutil -hashfile <file> SHA256` for one file at a time. Copy the result into the evidence files table in `findings.md`. If a file is redacted before it is
 committed, record the hash of the original, say that the committed copy is redacted, and keep the
 original with the Environment Lead.
 
@@ -62,10 +70,12 @@ Runs are numbered `run-01`, `run-02`, and so on. Screenshots use
 - Raw `snapshot.json` files (they contain the full AWS account ID)
 - Access keys, secret keys, session tokens, or passwords
 - Unredacted screenshots or output with real account IDs, access key IDs, ARNs, usernames, or emails
+- Anything from `output-private/`
 
 ## Before committing a file
 
 - [ ] Account IDs, access key IDs, ARNs, and usernames replaced with placeholders (or masked)
-- [ ] Console header, account alias, and email addresses blurred in screenshots
+- [ ] Console header, account alias, and email addresses blurred in screenshots, and the image checked at full size (a small preview can hide an unmasked ID)
+- [ ] Animated images (GIF) checked frame by frame
 - [ ] Only controlled lab data
 - [ ] Every number in `findings.md` can be traced to a file in the run folder

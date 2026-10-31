@@ -4,52 +4,94 @@ Capstone 2026 project: Team 3, Cloud Identity and Policy-as-Code Assurance.
 
 ## What this project does
 
-The team builds an identity and control-assurance pipeline for AWS IAM. It compares a
-baseline security requirement with machine-checkable evidence collected from a controlled
-sandbox account. The first control under test is **MFA enforcement**: every IAM user who
-can sign in to the AWS console must have multi-factor authentication.
+The team compares an automated policy-as-code check with a manual audit for one AWS IAM
+control: **every IAM user with a console password has at least one MFA device registered**.
+The check reads registered-device configuration. It does not test whether AWS blocks a
+sign-in or API call that lacks MFA. That is enforcement testing and is listed as later work.
 
-Three methods are compared against labeled test users (t1 to t5) with known answers:
+Three methods are compared on five labeled synthetic users (t1 to t5) with known answers:
 
-1. **Automated policy-as-code check:** a read-only collector gathers IAM facts and an
-   Open Policy Agent (OPA) rule decides compliance.
-2. **Independent read-only scripts:** Python checks of user MFA status and the IAM
-   credential report, used to cross-check the automated result.
-3. **Manual audit:** a person checks each test user in the console, which provides a
-   timing and accuracy baseline.
+1. **Automated policy-as-code check** (`automation/mfa_checker/`): a read-only collector
+   gathers IAM facts and an Open Policy Agent (OPA) rule decides compliance.
+2. **Independent validation scripts** (`scripts/`): Python checks of user MFA status and the
+   IAM credential report, plus a script that scores results against the answer key. They
+   cross-check the automated result. They are a validation tool, not a second implementation
+   of the control.
+3. **Manual audit** (`tests/manual-audit-procedure.md`): a person checks each test user
+   by hand, which gives an accuracy and timing baseline.
+
+## Status
+
+As of 2026-10-31. Details are in `tests/traceability-matrix.md`.
+
+| Item | State |
+|------|-------|
+| OPA rule, collector, and report (`automation/mfa_checker/`) | **Done.** 8 Rego tests and 8 end-to-end tests on simulated IAM. |
+| Validation scripts and scoring script (`scripts/`) | **Done.** 105 unit tests with fake AWS clients. They need no AWS account. |
+| Test plan, manual audit procedure, test cases, traceability matrix | **Done**, with some fields still to confirm (see `tests/test-plan.md`). |
+| Licensing, working agreement, schedule, fallback plan, decision records | **Done** (`LICENSE`, `THIRD_PARTY.md`, `docs/`). |
+| Run 01 on the live sandbox (2026-10-05): both methods matched the answer key for t1 to t5 | **Reported.** Raw `report.json` and `report.csv` are not yet in `evidence/run-01/`. A screenshot shows the statuses and a 0.5619 s run. The run used the root user, not the read-only scanner identity. The manual time (about 15 minutes) is an estimate. |
+| Blind manual audit, repeated timing runs, run under the read-only scanner identity, file hashes | **Planned.** |
+| Comparison with the AWS Config managed rules | **Planned.** |
+| Enforcement tests (sign-in and API denial without MFA) | **Later work.** |
 
 ## Repository map
 
 | Folder | What is in it |
 |--------|---------------|
 | `automation/mfa_checker/` | Automated check: collector, OPA rule, tests, and its own README |
-| `tests/` | Test plan, test cases, results template, traceability matrix, and unit tests |
+| `scripts/` | Validation scripts: user MFA status, credential report check, and scoring |
+| `tests/` | Test plan, manual audit procedure, test cases, results template, traceability matrix, and unit tests |
 | `policies/` | Baseline requirements and pointers to machine-readable policies |
 | `iam-config/` | IAM policy documents used in the lab |
-| `docs/` | Standards, plans, and project notes |
+| `docs/` | Working agreement, schedule, fallback plan, decision records, and standards |
 | `evidence/` | Redacted outputs and screenshots from test runs |
 
-Each folder has its own README with details and run instructions.
+Each folder has its own README with details. The repository is licensed under `LICENSE`.
+Third-party tools and their licenses are in `THIRD_PARTY.md`.
 
 ## Quick start
 
+Commands are for Windows Command Prompt or PowerShell. Replace `<SANDBOX_ID>` with the
+sandbox account ID when you run a command, and never type the real ID into a file you commit.
+In AWS CloudShell, use `python3` instead of `py`.
+
+**Run the unit tests (no AWS account needed):**
+
 ```
-# Automated check (sandbox account only; see automation/mfa_checker/README.md)
-python run_check.py --approved-account-id <SANDBOX_ID> --outdir evidence/run1 --mask-account-id
+py -m pip install -r scripts\requirements.txt
+py -m unittest discover -s tests -v
+```
 
+**Run the automated check (sandbox account only).** It needs the `opa` program on your path,
+or pass its location with `--opa`. See `automation/mfa_checker/README.md`.
 
+```
+cd automation\mfa_checker
+py run_check.py --approved-account-id <SANDBOX_ID> --outdir ..\..\evidence\run-02\automated --mask-account-id
+```
+
+**Run the validation scripts (sandbox account only).** They refuse to run in any other account.
+
+```
+cd scripts
+py check_mfa_status.py --approved-account-id <SANDBOX_ID> --profile lab-readonly
+py credential_report_check.py --approved-account-id <SANDBOX_ID> --profile lab-readonly
+```
+
+**Score a run against the answer key:**
+
+```
+py scripts\score_results.py --truth evidence\run-02\labeled-population.csv --automated evidence\run-02\automated\report.csv --manual evidence\run-02\manual-audit.csv --out-dir evidence\run-02
+```
 
 ## Working in this repository
 
 - Work on a branch and open a pull request. Do not commit directly to `main`.
 - Never commit access keys, secret keys, session tokens, or passwords.
-- Replace real account IDs, ARNs, and usernames with placeholders before committing.
-- Do not commit raw `snapshot.json` files or the OPA executable.
+- Replace real account IDs, access key IDs, ARNs, and user names with placeholders before committing.
+- Do not commit raw `snapshot.json` files, `output-private/`, or the OPA executable.
+- Check every screenshot at full size before committing it.
 - Use only controlled lab data.
-- This repository is intended to be public, so assume anyone can read every file and
-  its full history.
-
-## Status
-
-Work in progress. Test results and evidence are added to `evidence/` as runs are
-completed, and each requirement is tracked in `tests/traceability-matrix.md`.
+- This repository is intended to be public, so assume anyone can read every file and its
+  full history.
