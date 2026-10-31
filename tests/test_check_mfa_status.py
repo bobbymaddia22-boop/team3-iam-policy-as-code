@@ -1,6 +1,6 @@
 """Unit tests for scripts/check_mfa_status.py and the helpers in scripts/mfa_common.py.
 
-No AWS account is used. IAM is replaced by a small fake client.
+No AWS account is used. IAM and STS are replaced by small fake clients.
 
 Run from the repository root:
     python -m unittest discover -s tests -v
@@ -83,13 +83,38 @@ class FakeIam:
 LABELED = {"t1": (True, 1), "t2": (True, 0), "t3": (False, 0), "t4": (True, 0), "t5": (True, 2)}
 
 
-def run_main(iam, *extra_args):
-    """Run main() with a fake IAM client. Returns (exit_code, stdout, out_dir)."""
+APPROVED = "111122223333"
+OTHER_ACCOUNT = "999999999999"
+
+
+class FakeSts:
+    def __init__(self, account=APPROVED, error=None):
+        self.account = account
+        self.error = error
+
+    def get_caller_identity(self):
+        if self.error:
+            raise self.error
+        return {"Account": self.account}
+
+
+class ExplodingIam:
+    """Any use fails the test. Proves that no IAM call happened."""
+
+    def __getattr__(self, name):
+        raise AssertionError(f"IAM must not be called, but .{name} was used")
+
+
+def run_main(iam, *extra_args, sts=None, approved=APPROVED):
+    """Run main() with fake clients. Returns (exit_code, stdout, out_dir)."""
     out_dir = tempfile.mkdtemp()
     argv = ["check_mfa_status.py", "--out-dir", out_dir, *extra_args]
+    if approved is not None:
+        argv += ["--approved-account-id", approved]
     buffer = io.StringIO()
     with mock.patch.object(sys, "argv", argv), \
             mock.patch.object(cms, "make_iam_client", return_value=iam), \
+            mock.patch.object(cms, "make_sts_client", return_value=sts or FakeSts()), \
             contextlib.redirect_stdout(buffer), contextlib.redirect_stderr(io.StringIO()):
         code = cms.main()
     return code, buffer.getvalue(), Path(out_dir)
@@ -192,8 +217,87 @@ class MainTests(unittest.TestCase):
     def test_summary_is_written_to_json(self):
         _, _, out_dir = run_main(FakeIam(LABELED))
         data = json.loads(next(out_dir.glob("*.json")).read_text())
-        self.assertEqual(data["summary"]["failures"], 2)
+        self.assertEqual(data["summary"]["user_control"]["failures"], 2)
+        self.assertEqual(data["summary"]["user_control"]["result"], "FAIL")
         self.assertEqual(data["summary"]["overall"], "FAIL")
+
+
+class AccountGuardTests(unittest.TestCase):
+    def test_wrong_account_refuses_before_any_iam_call(self):
+        code, _, out_dir = run_main(ExplodingIam(), sts=FakeSts(account=OTHER_ACCOUNT))
+        self.assertEqual(code, 2)
+        self.assertEqual(list(out_dir.iterdir()), [])
+
+    def test_wrong_account_message_shows_only_last_four_digits(self):
+        with self.assertRaises(mfa_common.WrongAccountError) as ctx:
+            mfa_common.verify_account(FakeSts(account=OTHER_ACCOUNT), APPROVED)
+        message = str(ctx.exception)
+        self.assertNotIn(OTHER_ACCOUNT, message)
+        self.assertNotIn(APPROVED, message)
+        self.assertIn("9999", message)
+        self.assertIn("3333", message)
+
+    def test_sts_failure_refuses_before_any_iam_call(self):
+        sts = FakeSts(error=client_error("ExpiredToken", "GetCallerIdentity"))
+        code, _, out_dir = run_main(ExplodingIam(), sts=sts)
+        self.assertEqual(code, 2)
+        self.assertEqual(list(out_dir.iterdir()), [])
+
+    def test_approved_account_id_is_required(self):
+        with self.assertRaises(SystemExit) as ctx:
+            run_main(ExplodingIam(), approved=None)
+        self.assertEqual(ctx.exception.code, 2)
+
+    def test_malformed_account_id_is_rejected(self):
+        for bad in ("1234", "abcdefghijkl", "1111222233334"):
+            with self.assertRaises(SystemExit):
+                run_main(ExplodingIam(), approved=bad)
+
+    def test_matching_account_runs_and_records_only_masked_id(self):
+        code, out, out_dir = run_main(FakeIam({"t1": (True, 1)}))
+        self.assertEqual(code, 0)
+        written = "".join(p.read_text() for p in out_dir.iterdir())
+        self.assertIn("********3333", written)
+        self.assertNotIn(APPROVED, written + out)
+
+
+class EmptyAndRootTests(unittest.TestCase):
+    def test_no_users_is_not_a_success(self):
+        code, _, out_dir = run_main(FakeIam({}))
+        self.assertEqual(code, 2)
+        self.assertEqual(list(out_dir.iterdir()), [])
+
+    def test_root_result_is_separate_from_user_control(self):
+        code, _, out_dir = run_main(FakeIam({"t1": (True, 1), "t3": (False, 0)}, root_mfa=0))
+        summary = json.loads(next(out_dir.glob("*.json")).read_text())["summary"]
+        self.assertEqual(summary["user_control"]["result"], "PASS")
+        self.assertEqual(summary["user_control"]["failures"], 0)
+        self.assertEqual(summary["root_mfa"], {"enabled": False, "result": "FAIL"})
+        self.assertEqual(summary["overall"], "FAIL")
+        self.assertEqual(code, 1)
+
+    def test_root_is_not_counted_in_user_rows(self):
+        _, _, out_dir = run_main(FakeIam(LABELED, root_mfa=0), "--format", "both")
+        csv_text = next(out_dir.glob("*.csv")).read_text()
+        self.assertNotIn("root", csv_text.lower())
+        self.assertEqual(len(csv_text.strip().splitlines()), 6)  # header + 5 users
+
+
+class AccountHelperTests(unittest.TestCase):
+    def test_mask_account_id(self):
+        self.assertEqual(mfa_common.mask_account_id("111122223333"), "********3333")
+
+    def test_account_id_arg_accepts_twelve_digits(self):
+        self.assertEqual(mfa_common.account_id_arg("111122223333"), "111122223333")
+
+    def test_account_id_arg_rejects_other_input(self):
+        import argparse
+        for bad in ("", "123", "12345678901a", "1111222233334", " 111122223333"):
+            with self.assertRaises(argparse.ArgumentTypeError):
+                mfa_common.account_id_arg(bad)
+
+    def test_verify_account_returns_masked_id(self):
+        self.assertEqual(mfa_common.verify_account(FakeSts(), APPROVED), "********3333")
 
 
 class CommonHelperTests(unittest.TestCase):
