@@ -1,8 +1,6 @@
 # 0001: Scope the control to registered MFA devices
 
-**Date:** 2026-10-23
-**Status:** Accepted
-**Decided by:** [team members who agreed]
+
 
 ## Context
 Progress Report 1 used the phrase "MFA enforcement" for a check that reads IAM configuration. Reviewer feedback pointed out that reading registered devices shows whether MFA is configured, not whether AWS blocks a sign-in or API call that lacks MFA.
