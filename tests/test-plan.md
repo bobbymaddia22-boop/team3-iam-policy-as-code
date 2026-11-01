@@ -2,7 +2,7 @@
 
 **Version:** 0.2 (draft)
 **Author:** Bobby Maddia, Testing and Validation Lead
-**Last updated:** 2026-10-23
+**Last updated:** 2026-11-1
 **Status:** Draft, in review
 
 ## 1. Control under test
@@ -94,7 +94,7 @@ Five synthetic users, created and labeled before either method runs. Ground trut
 | SR2 | Checks are read-only | scanner-iam-policy.json|
 | SR3 | Refuse to run against the wrong account | [Planned] |
 | SR4 | Results are traceable to a run | [list evidence, for example hashes in `findings.md`] |
-| SR1, SR5, SR6 | [Planned] | [fill in] |
+
 
 ## 10. Roles
 
@@ -106,8 +106,3 @@ Five synthetic users, created and labeled before either method runs. Ground trut
 | Venika | Research and Risk Lead |
 | Dana DiLeo | Head of Documentation and write-ups |
 
-## 11. Limits
-
-- One run, five synthetic users. Results show that the check works on these cases, not how it performs at scale.
-- Timing from the first run was an average, not stopwatch readings, and is treated as unverified until the artifacts are in `evidence/`.
-- Simulator results model AWS policy evaluation. They do not show live behavior.
