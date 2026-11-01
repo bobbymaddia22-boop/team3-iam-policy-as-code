@@ -19,11 +19,11 @@ are not yet in `evidence/`.
 
 | ID | User | Configuration | Expected status | Requirement | Status |
 |----|------|---------------|-----------------|-------------|--------|
-| T1 | t1 | Console password and one MFA device | COMPLIANT | R2 | Pass (evidence incomplete) |
-| T2 | t2 | Console password and no MFA device | NON_COMPLIANT | R2 | Pass (evidence incomplete) |
-| T3 | t3 | No console password (access key only) | NOT_APPLICABLE | R2 | Pass (evidence incomplete) |
-| T4 | t4 | Console password; MFA device added then removed | NON_COMPLIANT | R2 | Pass (evidence incomplete) |
-| T5 | t5 | Console password and two MFA devices | COMPLIANT | R2 | Pass (evidence incomplete) |
+| T1 | t1 | Console password and one MFA device | COMPLIANT | R2 | Pass  |
+| T2 | t2 | Console password and no MFA device | NON_COMPLIANT | R2 | Pass |
+| T3 | t3 | No console password (access key only) | NOT_APPLICABLE | R2 | Pass  |
+| T4 | t4 | Console password; MFA device added then removed | NON_COMPLIANT | R2 | Pass  |
+| T5 | t5 | Console password and two MFA devices | COMPLIANT | R2 | Pass  |
 
 ### B. Method comparison
 
