@@ -1,0 +1,6 @@
+user_name,console_password,mfa_devices,expected_status
+t1,yes,1,COMPLIANT
+t2,yes,0,NON_COMPLIANT
+t3,no,0,NOT_APPLICABLE
+t4,yes,0,NON_COMPLIANT
+t5,yes,2,COMPLIANT
