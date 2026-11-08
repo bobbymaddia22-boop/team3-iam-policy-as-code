@@ -21,6 +21,4 @@ Precision: 1.00  Recall: 1.00  False-positive rate: 0.00
 | t4 | NON_COMPLIANT | NON_COMPLIANT | yes |
 | t5 | COMPLIANT | COMPLIANT | yes |
 
-## Limit
 
-Scored on a small synthetic population. One misclassified user changes a rate by a large step, so treat rates as descriptive, not as an estimate of real-world performance.
