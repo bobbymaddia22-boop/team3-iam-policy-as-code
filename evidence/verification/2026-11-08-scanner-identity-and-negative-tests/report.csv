@@ -1,0 +1,6 @@
+"user_name","console_access","mfa_device_count","status"
+"t1","True","1","COMPLIANT"
+"t2","True","0","NON_COMPLIANT"
+"t3","False","0","NOT_APPLICABLE"
+"t4","True","0","NON_COMPLIANT"
+"t5","True","2","COMPLIANT"
