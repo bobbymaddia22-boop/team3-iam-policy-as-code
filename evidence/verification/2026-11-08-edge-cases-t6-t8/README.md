@@ -1,7 +1,6 @@
 # Edge cases t6 to t8
 
 - Identity: read-only scanner (3-action policy), so this is not an admin-identity run.
-- Population: t1 to t5 plus three edge cases, built by script. Answer key: labeled-population.csv.
 - Tools: Python 3.13.17, OPA 1.22.2.
 
 ## Edge cases
