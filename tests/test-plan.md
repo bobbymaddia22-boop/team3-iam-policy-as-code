@@ -1,8 +1,8 @@
 # Test Plan: IAM Console-User MFA Check
 
-**Version:** 0.2 (draft)
+**Version:** 0.3 (draft)
 **Author:** Bobby Maddia, Testing and Validation Lead
-**Last updated:** 2026-11-1
+**Last updated:** 2026-11-08
 **Status:** Draft, in review
 
 ## 1. Control under test
@@ -17,9 +17,11 @@ Confirm each control ID against the document version the team actually cites bef
 
 | Ref | Source | Requirement (summary) | Version / control ID |
 |-----|--------|-----------------------|----------------------|
-| R1 | CIS AWS Foundations Benchmark | MFA enabled for all IAM users that have a console password | [confirm version and control ID from the benchmark PDF] |
-| R2 | CIS AWS Foundations Benchmark | MFA enabled for the root user (reported separately, not scored here) | [confirm version and control ID] |
-| R3 | NIST SP 800-63B-4 | Multi-factor authenticators for higher assurance levels (background only) | [confirm section] |
+| R1 | CIS AWS Foundations Benchmark | MFA enabled for the root user (reported separately, not scored here) |  |
+| R2 | CIS AWS Foundations Benchmark | MFA enabled for all IAM users that have a console password |  |
+| R3 | NIST SP 800-63B-4 | Multi-factor authenticators for higher assurance levels (background only) |  |
+
+R1 and R2 use the same numbering as `tests/test-cases.md` and `tests/traceability-matrix.md` (R1 is root, R2 is console users). Version 0.2 of this plan had them the other way round.
 
 ## 3. Scope
 
@@ -28,11 +30,6 @@ Confirm each control ID against the document version the team actually cites bef
 - Comparison of the automated check against a manual audit on the same five users.
 - Root MFA status, **reported separately** and never counted in the user-control score.
 
-**Later work (not part of this run)**
-- Deny-without-MFA policy and the IAM policy simulator cases (formerly MFA-03, MFA-04, MFA-08).
-- Live sign-in or API enforcement testing.
-- Comparison with the AWS Config managed rules.
-- Rerun under the read-only scanner identity.
 
 **Out of scope**
 - Identity federation / SSO.
@@ -49,14 +46,20 @@ Five synthetic users, created and labeled before either method runs. Ground trut
 | t3 | No | 0 | No console password (access key only) | NOT_APPLICABLE |
 | t4 | Yes | 0 | Console password; MFA device added then removed | NON_COMPLIANT |
 | t5 | Yes | 2 | Console password and two MFA devices | COMPLIANT |
+| t6 | No | 1 | MFA device and console password set, then the password removed | NOT_APPLICABLE |
+| t7 | Yes | 0 | Console password, must reset at next sign-in, never used, no MFA | NON_COMPLIANT |
+| t8.test+mfa,Case=A@team3 | Yes | 0 | Special characters in the username, console password, no MFA | NON_COMPLIANT |
+
+
+A 30-user set (t10 to t39) with shuffled, hidden labels is planned as the blind test and is not part of the results yet.
 
 ## 5. Test environment
 
 | Item | Value |
 |------|-------|
 | AWS account | Sandbox account, ID shown as `111122223333` in the repository |
-| Region | [confirm] |
-| Identity used for the run | [confirm with Steve: root, console identity, or scanner role] |
+| Identity used for the run | Run 01 (sandbox): root user, in CloudShell. The read-only scanner identity (3-action policy `scanner-iam-policy.json`). |
+| Tool versions | Python 3.13.17, OPA 1.22.2. Run 01 used OPA 1.21.1. |
 | Automated method | OPA/Rego pipeline in `automation/mfa_checker/` (Carlton) |
 | Cross-check | Python scripts in `scripts/` (Bobby) |
 | Manual method | [confirm: console or credential report], following `tests/manual-audit-procedure.md` |
@@ -85,15 +88,14 @@ Five synthetic users, created and labeled before either method runs. Ground trut
 - **Method result for a user:** matches the expected status = correct; otherwise incorrect. Record the difference.
 - **Run valid:** both result files exist, hashes are recorded, and the account ID check passed.
 - **Blocked:** the run could not be completed. Record the reason.
-- The control check is considered **supported by this run** if it classifies all five users correctly. A single run on five synthetic users cannot show more than that.
 
 ## 9. Safety requirements
 
 | Ref | Requirement | Test or evidence |
 |-----|-------------|------------------|
-| SR2 | Checks are read-only | scanner-iam-policy.json|
-| SR3 | Refuse to run against the wrong account | [Planned] |
-| SR4 | Results are traceable to a run | [list evidence, for example hashes in `findings.md`] |
+| SR2 | Checks are read-only | `scanner-iam-policy.json`; live run under the scanner identity (`evidence/verification/2026-11-08-scanner-identity-and-negative-tests/`). |
+| SR3 | Refuse to run against the wrong account | Live test in the practice account: wrong `--approved-account-id` gave exit code 2 and no IAM call (screenshot 21 in the folder above). |
+| SR4 | Results are traceable to a run | Run folders hold the outputs, tool versions and identity used. [SHA-256 hashes still to be recorded in each run's findings] |
 
 
 ## 10. Roles
