@@ -8,7 +8,7 @@ This folder belongs to Team 3 (Cloud Identity and Policy-as-Code Assurance).
 Show, with repeatable evidence, whether the check correctly detects this
 configuration: every IAM user with a console password has at least one MFA device
 registered. The tests compare an automated check with a manual audit on five labeled
-users (t1 to t5).
+users (t1 to t5). Three edge-case users (t6 to t8) have also been run.
 
 These tests do not show that AWS blocks a sign-in or API call that lacks MFA. That is
 enforcement testing, and it is listed as later work in `test-plan.md`.
@@ -33,7 +33,9 @@ enforcement testing, and it is listed as later work in `test-plan.md`.
 - **Labeled-population runs** use the five test users in the sandbox account. Their
   results are recorded in `evidence/run-NN/`.
 
+
 The automated OPA/Rego check has its own tests in `automation/mfa_checker/tests/`.
+
 
 ## Run the unit tests
 
@@ -69,6 +71,8 @@ A passing run ends with `OK`.
 - Redact the AWS console header, account alias, access key IDs, and email addresses
   in screenshots. Check the image at full size before committing it.
 - Never commit `snapshot.json` or anything in `output-private/`.
+- MFA device ARNs and serial numbers contain the account ID. AWS error text can print the
+  full account ID even when the report files are masked. Check both before committing.
 - Use only controlled lab data. No real user or organizational data.
 
 ## Owner

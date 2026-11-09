@@ -12,7 +12,8 @@ test-case outcomes.
 | Date | [YYYY-MM-DD] |
 | Tester | [Name] |
 | Run folder | `evidence/run-[NN]/` |
-| Environment | Sandbox account `111122223333`, [region] |
+| Account type | [Team sandbox or practice account. A practice account is the tester's own account; do not present its results as sandbox results] |
+| Environment | [Sandbox account `111122223333`, region] or [practice account, ID not recorded] |
 | Identity used | [root, console identity, or read-only scanner] |
 | Blind manual audit? | [Yes or No. If yes, who audited and who held the answer key] |
 | Manual evidence source | [IAM console or credential report] |
@@ -44,9 +45,14 @@ Paste the output of `scripts\score_results.py`, or link to `scoring-results.md` 
 
 | Test ID | Expected | Actual | Status | Evidence file | Notes |
 |---------|----------|--------|--------|---------------|-------|
+| T6 | NOT_APPLICABLE | | Pass / Fail / Blocked | | MFA device but no console password |
+| T7 | NON_COMPLIANT | | Pass / Fail / Blocked | | Must reset password, never used; no grace period assumed |
+| T8 | NON_COMPLIANT | | Pass / Fail / Blocked | | Special characters in the username |
 | | | | Pass / Fail / Blocked | | |
 
 ## Evidence hashes
+
+Compute each hash with `Get-FileHash <file> -Algorithm SHA256`.
 
 | File | SHA-256 |
 |------|---------|
@@ -69,6 +75,7 @@ Paste the output of `scripts\score_results.py`, or link to `scoring-results.md` 
 - [ ] No access keys, secrets, or tokens in any file
 - [ ] Account IDs, access key IDs, ARNs, and user names replaced with placeholders or masked
 - [ ] Screenshots redacted (console header, email, account alias) and checked at full size
+- [ ] No MFA device ARNs or serial numbers (they contain the account ID), and no AWS error text with the account ID unmasked
 - [ ] No `snapshot.json` and nothing from `output-private/`
 - [ ] No real user or organizational data
 
