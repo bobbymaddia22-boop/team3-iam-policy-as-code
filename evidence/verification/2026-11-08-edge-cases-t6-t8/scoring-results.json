@@ -1,0 +1,72 @@
+{
+  "positive_class": "NON_COMPLIANT",
+  "methods": [
+    {
+      "label": "Automated check",
+      "users": 8,
+      "confusion": {
+        "tp": 4,
+        "fp": 0,
+        "fn": 0,
+        "tn": 4
+      },
+      "precision": 1.0,
+      "recall": 1.0,
+      "false_positive_rate": 0.0,
+      "exact_status_matches": 8,
+      "per_user": [
+        {
+          "user_name": "t1",
+          "expected": "COMPLIANT",
+          "actual": "COMPLIANT",
+          "correct": true
+        },
+        {
+          "user_name": "t2",
+          "expected": "NON_COMPLIANT",
+          "actual": "NON_COMPLIANT",
+          "correct": true
+        },
+        {
+          "user_name": "t3",
+          "expected": "NOT_APPLICABLE",
+          "actual": "NOT_APPLICABLE",
+          "correct": true
+        },
+        {
+          "user_name": "t4",
+          "expected": "NON_COMPLIANT",
+          "actual": "NON_COMPLIANT",
+          "correct": true
+        },
+        {
+          "user_name": "t5",
+          "expected": "COMPLIANT",
+          "actual": "COMPLIANT",
+          "correct": true
+        },
+        {
+          "user_name": "t6",
+          "expected": "NOT_APPLICABLE",
+          "actual": "NOT_APPLICABLE",
+          "correct": true
+        },
+        {
+          "user_name": "t7",
+          "expected": "NON_COMPLIANT",
+          "actual": "NON_COMPLIANT",
+          "correct": true
+        },
+        {
+          "user_name": "t8.test+mfa,Case=A@team3",
+          "expected": "NON_COMPLIANT",
+          "actual": "NON_COMPLIANT",
+          "correct": true
+        }
+      ],
+      "observation_mismatches": []
+    }
+  ],
+  "disagreements": null,
+  "limit": "Scored on a small synthetic population. One misclassified user changes a rate by a large step, so treat rates as descriptive, not as an estimate of real-world performance."
+}
