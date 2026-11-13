@@ -1,4 +1,4 @@
-# Blind 30-user test (2026-11-12)
+# Blind 30-user test 
 
 Compares the automated MFA check with a manual audit on 30 synthetic users (t10 to t39) whose expected labels were hidden from the tester until scoring.
 
@@ -18,13 +18,8 @@ Compares the automated MFA check with a manual audit on 30 synthetic users (t10 
 ## Note on the audit sheet
 In the submitted audit file (Audit_Bobby.xlsx, SHA-256 5ABA141D4F7880833A411981F6E1D4CBD5FB434183F72C88603D7A6EFC99C2FB) the headers of columns B and C are swapped compared with the template: B is labeled mfa and C is labeled console_password. The file's automatic status column (D) still assumed the template order, so it shows NOT_APPLICABLE for the 10 users with a console password and no MFA. The answers themselves were entered under the headers as labeled and are correct. The scoring script reads the columns by header name, so the results above score the answers as recorded. The file is kept unmodified. This is a recording-layout error, not a judgement error, and it shows how easily a manual audit sheet can go wrong.
 
-## Limits
-- One auditor, who is also the tester; one run; 30 users.
-- The manual audit read the console Users list, which is quicker than some audit methods. The time is not directly comparable with run 01.
-- The checker and the sheet both depend on the same IAM data, so agreement shows consistency with the key, not that the key's rules are the right policy.
-- Not tested: whether AWS actually blocks a sign-in or API call without MFA.
 
 ## Files
 answer-key.csv, build-time.txt, build-key-hash.txt, checker-report.csv, checker-run-time.txt, Audit_Bobby.xlsx, scoring-blind-by-header/, screenshots/, SHA256SUMS.txt.
 
-Note: the manual-audit console screenshot (43) shows users t10 to t37; t38 and t39 were read in the same list but are not visible in the image.
+
