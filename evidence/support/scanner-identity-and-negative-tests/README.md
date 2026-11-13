@@ -1,7 +1,6 @@
 # Scanner-identity run and negative tests
 
-- Environment: Bobby Maddia's own practice AWS account (standard account, not the team sandbox; account ID not recorded here).
-- Population: t1 to t5, the same users as ../2026-11-07-practice-account-run/ (answer key: labeled-population.csv in that folder).
+- Population: t1 to t5, the same users as ../practice-account-run/ (answer key: labeled-population.csv in that folder).
 - Tools: Python 3.13.17, OPA 1.22.2.
 
 
@@ -19,7 +18,7 @@ report.csv is the checker output (bobby-admin, scanner-readonly, validation-read
 
 ## Notes
 
-- This run uses the read-only scanner identity, so it closes the "ran under an admin identity" caveat from the 2026-11-07 run.
+- This run uses the read-only scanner identity, so it closes the "ran under an admin identity" caveat from the practice-account run (`../practice-account-run/`).
 - Exit code 1 from check_mfa_status.py means at least one FAIL, which is expected (t2 and t4).
 - Finding: --mask-account-id masks the report files only. When AWS returns an error, the checker prints AWS's error text, which contains the full account ID. In screenshot 24 the ID was masked by a display filter in the command (-replace ... XXXX); the checker itself did not mask it.
 - Screenshot 21 uses a deliberately wrong account ID (123456789012).

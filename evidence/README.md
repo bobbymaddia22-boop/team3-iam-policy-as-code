@@ -8,7 +8,13 @@ reports should point to a file in this folder.
 | Path | What it is |
 |------|------------|
 | `run-template.md` | Blank findings record. Copy it for each new run. |
-| `run-01/` | First run: the labeled population (t1 to t5), the automated check, and the manual audit |
+| `run-01/` | **Run 01**: the first run. Labeled population t1 to t5 in the team sandbox, the automated check, and a manual audit (2026-10-05). |
+| `run-02/edge-cases-t6-t8/` | **Run 02**: the population extended to t1 to t8 (new edge cases t6 to t8), scored in Bobby Maddia's own sandbox account under the read-only scanner identity. Not blind. |
+| `run-03/blind-30-user-test/` | **Run 03**: the blind test. 30 users (t10 to t39) with hidden shuffled labels, scored for the automated check and a manual audit. |
+| `support/practice-account-run/` | The first rebuild of t1 to t5 in the sandbox account, run under an admin identity (before Run 02). |
+| `support/scanner-identity-and-negative-tests/` | Least-privilege run under the read-only scanner identity, plus the wrong-account and denied-permission tests. |
+| `support/credential-report-cross-check/` | Comparison of the automated check with the AWS credential report for the same account (12 users). |
+
 
 ## What each run folder contains
 
@@ -62,7 +68,7 @@ original with the Environment Lead.
 
 ## Naming
 
-Runs are numbered `run-01`, `run-02`, and so on. Screenshots use
+Numbered runs are `run-01`, `run-02`, and so on. Supporting evidence goes under `support/` in a folder named for what it shows. Screenshots use
 `NN-short-description.png`, for example `01-iam-users-list.png`.
 
 ## Never commit here

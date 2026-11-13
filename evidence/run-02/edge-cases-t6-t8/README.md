@@ -21,4 +21,4 @@
 - t7 assumes no grace period: a user with a password who has never signed in is still NON_COMPLIANT. The team should record this decision.
 - t8 shows the comma in the username stays inside one quoted CSV column and the user is not skipped.
 - report.csv excludes non-test users (bobby-admin, scanner-readonly, validation-readonly, noperm-test) so every user is in the answer key.
-- The credential-report freshness test (t9) and the 30-user bulk set are not part of this run.
+- The 30-user blind set is Run 03 (`../../run-03/blind-30-user-test/`). The credential report cross-check is in `../../support/credential-report-cross-check/`.

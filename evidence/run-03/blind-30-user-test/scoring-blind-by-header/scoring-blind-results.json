@@ -1,0 +1,34 @@
+{
+  "key_hash": "620A372757073D3B8E4B5DA472FB210E8766CD1BF4ABCCB4970528934551D53B",
+  "n_users": 30,
+  "methods": {
+    "automated check": {
+      "n": 30,
+      "correct": 30,
+      "accuracy": 1.0,
+      "TP": 10,
+      "FP": 0,
+      "FN": 0,
+      "TN": 20,
+      "precision": 1.0,
+      "recall": 1.0,
+      "mismatches": [],
+      "seconds": 4.3647
+    },
+    "auditor: Bobby Maddia": {
+      "n": 30,
+      "correct": 30,
+      "accuracy": 1.0,
+      "TP": 10,
+      "FP": 0,
+      "FN": 0,
+      "TN": 20,
+      "precision": 1.0,
+      "recall": 1.0,
+      "mismatches": [],
+      "minutes": 16.0,
+      "column_order": "COLUMNS SWAPPED vs template (read by header names)"
+    }
+  },
+  "auditor_disagreements": []
+}
