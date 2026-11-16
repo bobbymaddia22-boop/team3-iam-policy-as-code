@@ -3,15 +3,15 @@
 | | |
 |---|---|
 | **Control tested** | MFA is enabled for every IAM user who has a console password |
-| **Environment** | Bobby Maddia's own standard AWS account (not the team sandbox; account ID masked). Same configuration as the team sandbox, rebuilt by script. |
+| **Environment** | Bobby Maddia's own standard AWS account. Same configuration as the team sandbox. |
 | **Population** | Eight synthetic users. t1 to t5 are the Run 01 cases, rebuilt by script. t6 to t8 are new edge cases, built by script. The intended state of every user was written to the answer key before the user was built. Built by Bobby Maddia. |
 | **Blind test?** | No. The tester built the users and knew their configurations. |
-| **Automated method** | Read-only boto3 collector and OPA rule (`automation/mfa_checker/`), run by Bobby Maddia. Commit: [confirm commit hash] |
-| **Tool versions** | Python 3.13.17, OPA 1.22.2, boto3 [confirm version] |
+| **Automated method** | Read-only boto3 collector and OPA rule (`automation/mfa_checker/`), run by Bobby Maddia. Commit: 40f2a97e159ffbbd2814671fb00fb597ba7f999a |
+| **Tool versions** | Python 3.13.17, OPA 1.22.2, boto3 py -3.13 -m pip show boto3 |
 | **Run identity** | Read-only scanner identity (`scanner-ro`, 3 IAM actions: ListUsers, ListMFADevices, GetLoginProfile) |
 | **Data source** | Live IAM API calls (no cached credential report) |
 | **Manual method** | None in this run. No manual audit was done. |
-| **Run date and time (UTC)** | 2026-11-08 [time not recorded] |
+| **Run date and time (UTC)** | 2026-11-08  |
 
 ## 1. Labeled population
 
@@ -60,7 +60,7 @@ None. All eight users match the answer key. Notes on what the edge cases show:
 - Run in a different account and under a different identity (read-only scanner) than Run 01 (team sandbox, root user), so the two runs are not a like-for-like comparison.
 - Live IAM API data only. The check was not compared with the AWS credential report in this run (see `support/credential-report-cross-check/`).
 - Configuration only. The check tests registered MFA devices, not whether AWS blocks a sign-in or API call without MFA.
-- The build scripts are not in the repository yet. [confirm path once added]
+
 
 ## Evidence files
 
