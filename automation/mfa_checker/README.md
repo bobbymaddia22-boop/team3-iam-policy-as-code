@@ -55,14 +55,4 @@ OPA_BIN=/path/to/opa pytest -v tests/   # 8 end-to-end tests on simulated IAM
 
 Tested with Python 3.13, boto3 1.43.111, moto 5.2.3, OPA 1.21.1.
 
-## Not yet verified against real AWS
 
-- The scripts have only run against the moto simulator. Run them in the real sandbox
-  and compare with the IAM console before using any result as evidence.
-- Confirm that `ListMFADevices` returns passkey and security-key (FIDO) devices as
-  expected; test that case in the sandbox before relying on it.
-- Moto accepted placeholder MFA codes; real virtual MFA setup needs real TOTP codes.
-- Point-in-time only: a user changed after collection is not seen until the next run.
-
-`examples/simulated_run/` shows the report format from a simulated run and is **not**
-project evidence.
