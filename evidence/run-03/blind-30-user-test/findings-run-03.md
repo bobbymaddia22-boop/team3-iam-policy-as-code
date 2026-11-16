@@ -6,12 +6,12 @@
 | **Environment** | Bobby Maddia's own standard AWS account (not the team sandbox; account ID masked) |
 | **Population** | 30 synthetic users, t10 to t39, built by script: 10 COMPLIANT, 10 NON_COMPLIANT, 10 NOT_APPLICABLE in a shuffled order. The label of each user was written to the answer key before the user was built. |
 | **Blind test?** | Partly. The script hid the per-user labels, and the auditor did not open the key or see the checker output before the audit was saved. The auditor is the same person who ran the build, so this is not an independent audit. No independent auditor is included in this run. |
-| **Automated method** | Read-only boto3 collector and OPA rule (`automation/mfa_checker/`), run by Bobby Maddia. Commit: [confirm commit hash] |
-| **Tool versions** | Python 3.13.17, OPA 1.22.2, boto3 [confirm version] |
+| **Automated method** | Read-only boto3 collector and OPA rule (`automation/mfa_checker/`), run by Bobby Maddia. Commit:40f2a97e159ffbbd2814671fb00fb597ba7f999a (checker code unchanged) |
+| **Tool versions** | Python 3.13.17, OPA 1.22.2, boto3 1.43.126 |
 | **Run identity** | Read-only scanner identity (`scanner-ro`, 3 IAM actions). Users were built with an administrator identity. |
 | **Data source** | Live IAM API calls (no cached credential report) |
 | **Manual method** | One auditor (Bobby Maddia), reading the IAM console Users list (MFA, Password age and Console access columns). Start 19:22:00, end 19:38:00 local time. |
-| **Run date and time (UTC)** | Built 2026-11-12 02:24:16. Checker run 2026-11-13 01:38:28. |
+
 
 ## 1. Labeled population
 
