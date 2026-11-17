@@ -55,4 +55,17 @@ OPA_BIN=/path/to/opa pytest -v tests/   # 8 end-to-end tests on simulated IAM
 
 Tested with Python 3.13, boto3 1.43.111, moto 5.2.3, OPA 1.21.1.
 
+## Sandbox results
+
+First sandbox run: 5 of 5 users matched the expected labels in 0.56 seconds. Later runs under the restricted scanner identity matched 8 of 8 users. A wrong approved account ID exits with code 2 and makes no IAM call. A denied permission exits with code 3 and writes no report.
+
+## Known limits
+
+- Small, hand built user set. Results show the rule works on those cases, not how it performs at scale.
+- The check shows that an MFA device is registered. It does not test whether AWS blocks a sign in or API call without MFA.
+- It covers IAM users only. IAM Identity Center users are outside it.
+- It is a snapshot of one moment.
+- A partial permission denial and a write attempt under the scanner identity have not been tested.
+- How passkeys and security keys appear in the device list is unverified.
+- `--mask-account-id` only changes report files. Console screenshots and AWS error text can still show the full account ID, so check every screenshot before committing.
 
