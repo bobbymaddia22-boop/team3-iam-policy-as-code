@@ -9,7 +9,7 @@ control: **every IAM user with a console password has at least one MFA device re
 The check reads registered-device configuration. It does not test whether AWS blocks a
 sign-in or API call that lacks MFA. That is enforcement testing and is listed as later work.
 
-Three methods are compared on five labeled synthetic users (t1 to t5) with known answers:
+Three methods are compared on labeled synthetic users with known answers (t1 to t5, then t1 to t8, then a blind set of 30):
 
 1. **Automated policy-as-code check** (`automation/mfa_checker/`): a read-only collector
    gathers IAM facts and an Open Policy Agent (OPA) rule decides compliance.
@@ -22,18 +22,20 @@ Three methods are compared on five labeled synthetic users (t1 to t5) with known
 
 ## Status
 
-As of 2026-10-31. Details are in `tests/traceability-matrix.md`.
+As of 2026-11-22. Details are in `tests/traceability-matrix.md`.
 
 | Item | State |
 |------|-------|
 | OPA rule, collector, and report (`automation/mfa_checker/`) | **Done.** 8 Rego tests and 8 end-to-end tests on simulated IAM. |
 | Validation scripts and scoring script (`scripts/`) | **Done.** 105 unit tests with fake AWS clients. They need no AWS account. |
-| Test plan, manual audit procedure, test cases, traceability matrix | **Done**, with some fields still to confirm (see `tests/test-plan.md`). |
-| Licensing, working agreement, schedule, fallback plan, decision records | **Done** (`LICENSE`, `THIRD_PARTY.md`, `docs/`). |
-| Run 01 on the live sandbox (2026-10-05): both methods matched the answer key for t1 to t5 | **Reported.** Raw `report.json` and `report.csv` are not yet in `evidence/run-01/`. A screenshot shows the statuses and a 0.5619 s run. The run used the root user, not the read-only scanner identity. The manual time (about 15 minutes) is an estimate. |
-| Blind manual audit, repeated timing runs, run under the read-only scanner identity, file hashes | **Planned.** |
+| Run 01 (5 users, team sandbox, 2026-10-05) | **Done.** Both methods matched the answer key. The run used the root user. The manual time (about 15 minutes) is an estimate. The raw output files were not saved. |
+| Run 02 (8 users, edge cases t6 to t8) | **Done.** 8 of 8 matches under the read-only scanner identity. Not blind. |
+| Run 03 (blind test, 30 users) | **Done.** Both methods scored 30 of 30. The automated check took 4.4 s and the manual audit 16 min. The test is only partly blind: the tester built the users and did the only audit. |
+| Credential report cross-check | **Done.** The automated check and the AWS credential report agreed on all 12 users. |
+| Negative tests | **Done.** The wrong account is refused (exit 2). A run without permission stops with no report written (exit 3). |
+| Independent audit of a set built by another team member | **In progress.** |
 | Comparison with the AWS Config managed rules | **Planned.** |
-| Enforcement tests (sign-in and API denial without MFA) | **Later work.** |
+
 
 ## Repository map
 
@@ -82,8 +84,9 @@ py credential_report_check.py --approved-account-id <SANDBOX_ID> --profile lab-r
 **Score a run against the answer key:**
 
 ```
-py scripts\score_results.py --truth evidence\run-02\labeled-population.csv --automated evidence\run-02\automated\report.csv --manual evidence\run-02\manual-audit.csv --out-dir evidence\run-02
+py scripts\score_results.py --truth evidence\run-02\edge-cases-t6-t8\labeled-population.csv --automated evidence\run-02\edge-cases-t6-t8\report.csv --out-dir evidence\run-02\edge-cases-t6-t8
 ```
+The blind test in `evidence/run-03/` was scored with `scripts/TestScripts/score_blind.py`. See that folder's README.
 
 ## Working in this repository
 
