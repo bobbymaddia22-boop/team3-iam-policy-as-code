@@ -1,2 +1,8 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Evidence files are hashed, so Git must not change their line endings
+evidence/run-03/** -text
+evidence/support/credential-report-cross-check/** -text
