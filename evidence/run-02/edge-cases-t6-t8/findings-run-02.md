@@ -7,7 +7,7 @@
 | **Population** | Eight synthetic users. t1 to t5 are the Run 01 cases, rebuilt by script. t6 to t8 are new edge cases, built by script. The intended state of every user was written to the answer key before the user was built. Built by Bobby Maddia. |
 | **Blind test?** | No. The tester built the users and knew their configurations. |
 | **Automated method** | Read-only boto3 collector and OPA rule (`automation/mfa_checker/`), run by Bobby Maddia. Commit: 40f2a97e159ffbbd2814671fb00fb597ba7f999a |
-| **Tool versions** | Python 3.13.17, OPA 1.22.2, boto3 py -3.13 -m pip show boto3 |
+| **Tool versions** | Python 3.13.17, OPA 1.22.2, boto3 1.43.126 |
 | **Run identity** | Read-only scanner identity (`scanner-ro`, 3 IAM actions: ListUsers, ListMFADevices, GetLoginProfile) |
 | **Data source** | Live IAM API calls (no cached credential report) |
 | **Manual method** | None in this run. No manual audit was done. |

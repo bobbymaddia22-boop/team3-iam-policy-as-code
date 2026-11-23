@@ -71,8 +71,8 @@ the user once had one. t5 checks that more than one device is handled.
 
 This was a single run on five users, made once, at one point in time.
 
-Raw output files are in `automated/`, and screenshots are in `screenshots/`. See the README in
-each folder for what to add.
+The original output files were not saved. The screenshots in `screenshots/` show the run and its
+report. See `automated/README.md`.
 
 ## 3. Manual audit results
 
@@ -143,12 +143,11 @@ not seen. For each test below, record the same four items using `../run-template
 
 ## Evidence files
 
-| File | Contents | SHA-256 |
-|------|----------|---------|
-| `labeled-population.csv` | Answer key for t1 to t5 | |
-| `manual-audit.csv` | Manual verdicts and approximate times | |
-| `automated/report.json` | Automated check output (add) | |
-| `automated/report.csv` | Automated check output (add) | |
-| `screenshots/` | Redacted console and terminal screenshots (add) | not applicable |
+| File | Contents |
+|------|----------|
+| `labeled-population.csv` | Answer key for t1 to t5 | 
+| `manual-audit.csv` | Manual verdicts and approximate times | 
+| `screenshots/` | Redacted console and terminal screenshots | 
 
-Compute each hash as described in `../README.md`.
+The original `report.json` and `report.csv` were not saved, so this run has no hash list.d
+

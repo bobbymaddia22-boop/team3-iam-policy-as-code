@@ -13,7 +13,7 @@
 
 ## Result
 
-8 of 8 exact matches; TP=4 (t2, t4, t7, t8), FP=0, FN=0, TN=4. Run time about 1.6 s for 12 users.
+8 of 8 exact matches; TP=4 (t2, t4, t7, t8), FP=0, FN=0, TN=4. Run time about 1.3 s for 12 users.
 
 ## Notes
 
