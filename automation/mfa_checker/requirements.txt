@@ -1,4 +1,4 @@
-boto3
+boto3==1.43.126
 # Only needed to run the tests against simulated IAM:
-moto[iam,sts]
-pytest
+moto[iam,sts]==5.2.5
+pytest==9.2.0

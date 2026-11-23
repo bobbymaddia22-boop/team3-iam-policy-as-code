@@ -11,6 +11,8 @@ This project reuses open-source tools and cites public standards. This file reco
 | moto | Local simulation of IAM for tests | Apache-2.0 | Latest on PyPI at check time: 5.2.4 (released 2026-10-11). Team's installed version: 	Team's installed version: 5.2.5 | License field on the project's PyPI page, https://pypi.org/project/moto/ |
 | pytest | Running unit tests | MIT | Latest on PyPI at check time: 9.1.1 (released 2026-06-19). Team's installed version: Team's installed version: 9.2.0 | License field on the project's PyPI page, https://pypi.org/project/pytest/ |
 | Open Policy Agent (OPA) | Evaluating `mfa.rego` | Apache-2.0 |Team's installed version: 1.22.2 (Run 01 used 1.21.1 in CloudShell) | License shown on the project's GitHub page, https://github.com/open-policy-agent/opa |
+| pyotp | Generating the one-time codes needed to activate the virtual MFA devices that `scripts/TestScripts/build_bulk.py` registers for test users | MIT | Team's installed version: 2.10.0 | License field from `pip show pyotp` and the project's PyPI page, https://pypi.org/project/pyotp/ |
+| openpyxl | Reading the manual audit sheet in `scripts/TestScripts/score_blind.py` | MIT | Team's installed version: 3.1.5 | License field from `pip show openpyxl` and the project's PyPI page, https://pypi.org/project/openpyxl/ |
 
 Notes:
 - Dependencies are installed from their package sources at run time. No third-party source code is copied into this repository.

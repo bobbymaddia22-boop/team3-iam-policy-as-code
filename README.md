@@ -20,6 +20,8 @@ Three methods are compared on labeled synthetic users with known answers (t1 to 
 3. **Manual audit** (`tests/manual-audit-procedure.md`): a person checks each test user
    by hand, which gives an accuracy and timing baseline.
 
+**Main entry point:** `automation/mfa_checker/run_check.py` is the project's automated check. The scripts in `scripts/` (`check_mfa_status.py` and `credential_report_check.py`) are independent validation tools that cross-check its result. They are not a second implementation of the control. The scripts in `scripts/TestScripts/` build the synthetic test users and score the blind test.
+
 ## Status
 
 As of 2026-11-22. Details are in `tests/traceability-matrix.md`.
@@ -28,6 +30,7 @@ As of 2026-11-22. Details are in `tests/traceability-matrix.md`.
 |------|-------|
 | OPA rule, collector, and report (`automation/mfa_checker/`) | **Done.** 8 Rego tests and 8 end-to-end tests on simulated IAM. |
 | Validation scripts and scoring script (`scripts/`) | **Done.** 105 unit tests with fake AWS clients. They need no AWS account. |
+| Licensing, working agreement, schedule, fallback plan, decision records, security policy, architecture, and security analysis | **Done** (`LICENSE`, `THIRD_PARTY.md`, `SECURITY.md`, `docs/`). |
 | Run 01 (5 users, team sandbox, 2026-10-05) | **Done.** Both methods matched the answer key. The run used the root user. The manual time (about 15 minutes) is an estimate. The raw output files were not saved. |
 | Run 02 (8 users, edge cases t6 to t8) | **Done.** 8 of 8 matches under the read-only scanner identity. Not blind. |
 | Run 03 (blind test, 30 users) | **Done.** Both methods scored 30 of 30. The automated check took 4.4 s and the manual audit 16 min. The test is only partly blind: the tester built the users and did the only audit. |
@@ -42,12 +45,13 @@ As of 2026-11-22. Details are in `tests/traceability-matrix.md`.
 | Folder | What is in it |
 |--------|---------------|
 | `automation/mfa_checker/` | Automated check: collector, OPA rule, tests, and its own README |
-| `scripts/` | Validation scripts: user MFA status, credential report check, and scoring |
+| `scripts/` | Validation scripts (user MFA status, credential report check), the scoring script, and `TestScripts/` for building test users and scoring the blind test |
 | `tests/` | Test plan, manual audit procedure, test cases, results template, traceability matrix, and unit tests |
 | `policies/` | Baseline requirements and pointers to machine-readable policies |
 | `iam-config/` | IAM policy documents used in the lab |
-| `docs/` | Working agreement, schedule, fallback plan, decision records, and standards |
+| `docs/` | Working agreement, schedule, fallback plan, decision records, standards, architecture, and security analysis |
 | `evidence/` | Redacted outputs and screenshots from test runs |
+| `SECURITY.md` | How to report a security problem |
 
 Each folder has its own README with details. The repository is licensed under `LICENSE`.
 Third-party tools and their licenses are in `THIRD_PARTY.md`.
@@ -65,12 +69,27 @@ py -m pip install -r scripts\requirements.txt
 py -m unittest discover -s tests -v
 ```
 
+**Run the tests for the automated check (no AWS account needed).** From `automation/mfa_checker`, with the `opa` program on your path:
+
+```
+py -m pip install moto[iam,sts] pytest
+opa test policy -v
+$env:OPA_BIN = "<path to opa.exe>"
+py -m pytest -v tests
+```
+
 **Run the automated check (sandbox account only).** It needs the `opa` program on your path,
 or pass its location with `--opa`. See `automation/mfa_checker/README.md`.
 
 ```
 cd automation\mfa_checker
 py run_check.py --approved-account-id <SANDBOX_ID> --outdir ..\..\evidence\run-02\automated --mask-account-id
+```
+
+In AWS CloudShell, run it from `automation/mfa_checker/`:
+
+```
+python3 run_check.py --approved-account-id <SANDBOX_ID> --outdir <dir> --mask-account-id
 ```
 
 **Run the validation scripts (sandbox account only).** They refuse to run in any other account.
@@ -87,6 +106,23 @@ py credential_report_check.py --approved-account-id <SANDBOX_ID> --profile lab-r
 py scripts\score_results.py --truth evidence\run-02\edge-cases-t6-t8\labeled-population.csv --automated evidence\run-02\edge-cases-t6-t8\report.csv --out-dir evidence\run-02\edge-cases-t6-t8
 ```
 The blind test in `evidence/run-03/` was scored with `scripts/TestScripts/score_blind.py`. See that folder's README.
+```
+The scripts in `scripts/TestScripts/` need extra packages. Install them first (use your own sandbox account only; they refuse to run in any other):
+```
+py -m pip install -r scripts\TestScripts\requirements.txt
+```
+
+## Tool versions
+
+The evidence runs used Python 3.13.17, boto3 1.43.126, OPA 1.22.2, moto 5.2.5, and pytest 9.2.0. Run 01 used OPA 1.21.1 in AWS CloudShell. Details are in `THIRD_PARTY.md`.
+
+## Evaluated release
+
+The version evaluated for the course is the release tagged `v1.0-week12`. The Releases page shows its commit hash.
+
+## Known limits and security
+
+The check's limits are in the "Known limits" section of `automation/mfa_checker/README.md`. The assets, threats, controls, and residual risks are in `docs/security-analysis.md`, and the design is in `docs/architecture.md`. To report a security problem, follow `SECURITY.md`.
 
 ## Working in this repository
 
