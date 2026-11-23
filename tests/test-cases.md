@@ -90,7 +90,7 @@ results against the answer key in `evidence/run-NN/labeled-population.csv`.
   - T6 checks that the rule depends on the console password, not on whether an MFA device
     exists.
   - T7 checks that a user who has never signed in is still flagged. This assumes no grace
-    period for new users. [Record the team decision in `docs/decisions/`.]
+    period for new users. See `docs/decisions/0003-never-used-password-in-scope.md`.
   - T8 checks that special characters (+ @ , and mixed case) in a username do not break the
     output or cause the user to be skipped. The comma must stay inside one quoted CSV column.
 - **Run 2026-11-08:** 8 of 8 exact matches (TP 4, FP 0, FN 0, TN 4).
@@ -148,8 +148,7 @@ Each case has a simulated or unit-level test and a live sandbox test.
   `GuardAndInputTests` (validation scripts).
 - **Live:** run each check with a deliberately wrong `--approved-account-id`.
 - **Expected result:** exit code 2, an error that identifies the account problem, and no IAM
-  call made. [The collector's message names no account digits; confirm what the validation
-  scripts show, and align this line and the tools.]
+  call made. The collector's message names no account digits. The validation scripts' message shows only the last four digits of each account ID.
 - **Live result:** the automated check refused to scan with exit code 2 and
   made no IAM call. The validation scripts were not run live with a wrong ID.
 

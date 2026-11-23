@@ -191,3 +191,5 @@ evidence/**/snapshot.json
 
 # Local-only script output that contains real user names
 output-private/
+
+*_PRIVATE.csv

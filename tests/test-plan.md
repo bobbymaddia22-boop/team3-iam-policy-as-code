@@ -1,9 +1,6 @@
 # Test Plan: IAM Console-User MFA Check
 
-**Version:** 0.3 (draft)
 **Author:** Bobby Maddia, Testing and Validation Lead
-**Last updated:** 2026-11-08
-**Status:** Draft, in review
 
 ## 1. Control under test
 
@@ -62,7 +59,7 @@ A 30-user set (t10 to t39) with shuffled, hidden labels is planned as the blind 
 | Tool versions | Python 3.13.17, OPA 1.22.2. Run 01 used OPA 1.21.1. |
 | Automated method | OPA/Rego pipeline in `automation/mfa_checker/` (Carlton) |
 | Cross-check | Python scripts in `scripts/` (Bobby) |
-| Manual method | [confirm: console or credential report], following `tests/manual-audit-procedure.md` |
+| Manual method | IAM console Users list (MFA, Password age and Console access columns), following `tests/manual-audit-procedure.md` |
 
 ## 6. Approach: how the comparison is kept fair
 
