@@ -148,8 +148,7 @@ Each case has a simulated or unit-level test and a live sandbox test.
   `GuardAndInputTests` (validation scripts).
 - **Live:** run each check with a deliberately wrong `--approved-account-id`.
 - **Expected result:** exit code 2, an error that identifies the account problem, and no IAM
-  call made. [The collector's message names no account digits; confirm what the validation
-  scripts show, and align this line and the tools.]
+  call made. The collector's message names no account digits. The validation scripts' message shows only the last four digits of each account ID.
 - **Live result:** the automated check refused to scan with exit code 2 and
   made no IAM call. The validation scripts were not run live with a wrong ID.
 
