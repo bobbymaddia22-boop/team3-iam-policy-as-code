@@ -149,5 +149,5 @@ not seen. For each test below, record the same four items using `../run-template
 | `manual-audit.csv` | Manual verdicts and approximate times | 
 | `screenshots/` | Redacted console and terminal screenshots | 
 
-The original `report.json` and `report.csv` were not saved, so this run has no hash list.d
+The original `report.json` and `report.csv` were not saved, so this run has no hash list.
 
