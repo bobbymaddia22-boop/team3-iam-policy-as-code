@@ -45,7 +45,7 @@ configuration check. It covers this project's tool and evidence, not the securit
 - **Point-in-time.** A result is true only at the moment of the run. A user changed afterward is not reflected.
 - **Small, synthetic populations.** Accuracy figures are descriptive, not an estimate for real accounts.
 - **One method of reading devices.** How passkeys and security keys appear in the device list was not verified until the sandbox run that includes one.
-- **Partial permission denial.** A scan that is denied on some calls but not others has not been tested.
+- **Partial permission denial.** A scan that is denied on some calls but not others, has not been tested in a live run.
 - **Registered is not enforced.** The check shows a device is registered. It does not show AWS blocks a sign-in that lacks MFA.
 - **Local copies.** The snapshot holds the full account ID on the operator's machine until it is deleted.
 - **Single auditor.** In the blind test, the tester built the users and did the only audit.
