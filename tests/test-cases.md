@@ -90,7 +90,7 @@ results against the answer key in `evidence/run-NN/labeled-population.csv`.
   - T6 checks that the rule depends on the console password, not on whether an MFA device
     exists.
   - T7 checks that a user who has never signed in is still flagged. This assumes no grace
-    period for new users. [Record the team decision in `docs/decisions/`.]
+    period for new users. See `docs/decisions/0003-never-used-password-in-scope.md`.
   - T8 checks that special characters (+ @ , and mixed case) in a username do not break the
     output or cause the user to be skipped. The comma must stay inside one quoted CSV column.
 - **Run 2026-11-08:** 8 of 8 exact matches (TP 4, FP 0, FN 0, TN 4).

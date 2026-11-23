@@ -1,6 +1,5 @@
 # Manual Audit Procedure: IAM Console-User MFA Check
 
-**Version:** 0.2 (draft)
 **Used by:** `tests/test-plan.md`, section 6
 **Control:** Every IAM user with a console password has at least one MFA device.
 
@@ -58,7 +57,7 @@ Record exactly what the console shows for these, and the status you chose:
 
 - **MFA device removed (t4):** count only devices registered now. Zero devices with a console password is `NON_COMPLIANT`.
 - **MFA device but no console password (t6):** no console password means `NOT_APPLICABLE`, whatever devices exist.
-- **Password must be reset at next sign-in, never used (t7):** a console password exists, so it counts as "yes". With no MFA it is `NON_COMPLIANT`. This assumes no grace period for new users. [Record the team decision in `docs/decisions/`.]
+- **Password must be reset at next sign-in, never used (t7):** a console password exists, so it counts as "yes". With no MFA it is `NON_COMPLIANT`. This assumes no grace period for new users. See `docs/decisions/0003-never-used-password-in-scope.md`.
 - **Special characters in a username (t8):** copy the name exactly from the console. Do not retype it from memory.
 - **Larger sets:** record the time per user, so any slowdown or fatigue over a long audit is visible.
 
