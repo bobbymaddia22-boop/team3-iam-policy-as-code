@@ -56,10 +56,15 @@ PowerShell, from the run folder:
 Get-FileHash -Algorithm SHA256 .\automated\report.json
 ```
 
-To hash every file in a run folder and write the list to `SHA256SUMS.txt`, run this in PowerShell from the repository root (change `run-02` to the run you are recording):
+To hash every file in a run folder and write the list to `SHA256SUMS.txt`, run this in PowerShell from the run folder (for example `evidence\run-03\blind-30-user-test`). It writes the list with forward slashes and LF line endings, so the same list verifies on Windows, Mac and Linux:
 
 ```
-Get-ChildItem evidence\run-02 -Recurse -File | Where-Object { $_.Name -ne "snapshot.json" -and $_.Name -ne "SHA256SUMS.txt" } | ForEach-Object { $h = (Get-FileHash $_.FullName -Algorithm SHA256).Hash; "$h  $($_.FullName.Substring((Get-Location).Path.Length+1))" } | Out-File evidence\run-02\SHA256SUMS.txt -Encoding ascii
+$lines = Get-ChildItem -Recurse -File | Where-Object { $_.Name -ne "snapshot.json" -and $_.Name -ne "SHA256SUMS.txt" } | Sort-Object FullName | ForEach-Object { $rel = $_.FullName.Substring((Get-Location).Path.Length+1).Replace('\','/'); "$((Get-FileHash $_.FullName -Algorithm SHA256).Hash)  $rel" }
+[IO.File]::WriteAllText("$PWD\SHA256SUMS.txt", (($lines -join "`n") + "`n"))
+```
+
+Line endings matter, because Git can change them and that changes the hash. Run this from a fresh clone, not from a folder you edited on Windows, and add the run folder to `.gitattributes` with `-text` before you commit (see the existing `evidence/run-03/**` line).
+
 ```
 
 In Command Prompt, use `certutil -hashfile <file> SHA256` for one file at a time. Copy the result into the evidence files table in `findings.md`. If a file is redacted before it is
